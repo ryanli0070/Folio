@@ -103,7 +103,8 @@ export async function createUploadUrl(input: CreateUploadUrlInput): Promise<Crea
  */
 export async function confirmUpload(key: string, opts: { userId: string; purpose: UploadPurpose }): Promise<ConfirmedObject> {
   const { userId, purpose } = opts;
-  if (!key.startsWith(`users/${userId}/`)) {
+  const keyRe = /^users\/([^/]+)\/[0-9a-f-]{36}\.(jpg|png|webp|gif|mp4|webm)$/;
+  if (keyRe.exec(key)?.[1] !== userId) {
     throw new StorageError("This upload does not belong to you.", 403);
   }
 
