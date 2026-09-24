@@ -5,7 +5,7 @@
 - [x] 1 Foundation: scaffold, Tailwind/shadcn, Primer tokens, app shell, schema + migrations, Auth.js, profile-on-signup, contracts (queries, types, limits, storage interface, MediaUploader props)
 - [x] 2 Features (3 subagents): A Profile · B Projects · C Media
 - [x] 3 Integration: pin + dnd reorder, empty/loading/error states, 404s, OG metadata, mobile pass, manual walkthrough
-- [ ] 4 Deploy readiness: SETUP.md (Vercel, OAuth callback, R2 CORS, migrations), final build
+- [x] 4 Deploy readiness: SETUP.md (Vercel, OAuth callback, R2 CORS, migrations), final build
 
 ## Data model
 - `user`, `account`, `session`, `verificationToken`: Auth.js Drizzle adapter tables.

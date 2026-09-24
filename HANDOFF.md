@@ -1,20 +1,25 @@
 # Handoff
 
-**Status:** Phase 2 done (≈65%). Next: Phase 3 integration/polish.
+**Status:** Phase 4 done (100% of v1 build). Not deployed; waiting on credentials + Vercel setup by owner.
 
 **Done:**
-- Phases 0–1 (scaffold, schema, auth, contracts).
-- A Profile: `app/dashboard/profile/*`, `lib/actions/profile.ts`, `components/profile/*`, public `app/[username]/*`.
-- B Projects: `lib/actions/projects.ts`, `components/projects/*` (form, link editor, markdown), dashboard list, new/edit pages, public `app/[username]/[slug]/*`.
-- C Media: `lib/storage/*` (R2), `app/api/uploads/{presign,confirm}`, `lib/actions/media.ts`, `components/media/*`.
-- Integration fixes: signed Content-Type, key-format + key-reuse guards, image-only covers, touch-visible media controls, name/school/link-label limits.
+- All v1 features: profile editor + avatar, public profile, project CRUD with links/markdown/stack/collaborators, R2 media uploader (progress, reorder, cover, delete) + gallery, pin/unpin + drag reorder, 404s, error/loading states, OG metadata, light/dark, mobile layout.
+- Verified locally against PGlite (via a throwaway Neon-HTTP shim) with a seeded session: all routes, cross-user edit blocked, markdown sanitized (`<script>`, `javascript:` stripped), create project, invalid URL rejected, profile rename/reserved/taken, pin + keyboard reorder persisted to public page, delete, no horizontal overflow at 375px, dark mode.
+- `pnpm db:migrate` verified against a Postgres-wire server (applies, idempotent).
+- SETUP.md: Neon, GitHub OAuth (dev + prod apps), R2 bucket/token/public URL/CORS, Vercel env vars, migrations.
 
 **In progress:** —
 
-**Next steps:** 1) pin/unpin + dnd-kit reorder in `app/dashboard/page.tsx` (placeholder marked). 2) loading.tsx/error.tsx, empty states. 3) OG check, mobile pass. 4) Dedupe TagInput (`components/profile/tag-input.tsx` vs `components/projects/tag-input.tsx`). 5) Phase 4 final SETUP review.
+**Next steps:**
+1. Owner: create `.env.local` (see `.env.example`), `pnpm db:migrate`, `pnpm dev`, sign in with GitHub.
+2. Owner: real upload test (image + video + avatar) once R2 + CORS are set — the only flow not exercised locally.
+3. Deploy per SETUP.md §5.
 
-**Known issues:** No end-to-end run yet (no DB/OAuth/R2 creds): public pages 500 locally only because DATABASE_URL is missing. Orphaned R2 objects possible if an upload is never confirmed.
+**Known issues:**
+- Not exercised: real GitHub OAuth round-trip, real R2 upload/HEAD/delete (no creds).
+- Presigned-but-never-confirmed uploads leave orphan R2 objects (suggest an R2 lifecycle rule).
+- No transactions (neon-http): pin/media ordering uses `db.batch`; concurrent edits from two tabs could interleave (fine at ~10 users).
 
-**Env/credentials still needed:** `.env.local` with all vars in `.env.example`; then `pnpm db:migrate`.
+**Env/credentials still needed:** DATABASE_URL, AUTH_SECRET, AUTH_GITHUB_ID, AUTH_GITHUB_SECRET, R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET, R2_PUBLIC_URL (+ optional NEXT_PUBLIC_SITE_URL).
 
 **Decisions this session:** docs/PLAN.md › Decisions.
