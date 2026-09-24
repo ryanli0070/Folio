@@ -360,18 +360,20 @@ function SortableMediaItem({
         <GripVertical className="size-3.5" />
       </button>
 
-      <div className="absolute top-1.5 right-1.5 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
-        <Button
-          type="button"
-          variant="secondary"
-          size="icon-xs"
-          disabled={disabled}
-          aria-pressed={item.isCover}
-          aria-label={item.isCover ? "Cover image" : "Set as cover"}
-          onClick={onSetCover}
-        >
-          <Star className={cn("size-3.5", item.isCover && "fill-current")} />
-        </Button>
+      <div className="absolute top-1.5 right-1.5 flex gap-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
+        {item.kind === "image" && (
+          <Button
+            type="button"
+            variant="secondary"
+            size="icon-xs"
+            disabled={disabled}
+            aria-pressed={item.isCover}
+            aria-label={item.isCover ? "Cover image" : "Set as cover"}
+            onClick={onSetCover}
+          >
+            <Star className={cn("size-3.5", item.isCover && "fill-current")} />
+          </Button>
+        )}
         <Button
           type="button"
           variant="destructive"
