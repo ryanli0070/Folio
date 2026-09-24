@@ -25,7 +25,21 @@ Put the client ID/secret in `AUTH_GITHUB_ID` / `AUTH_GITHUB_SECRET`. Generate `A
 4. CORS: see [R2 CORS](#r2-cors).
 5. Optional: add an object lifecycle rule to clean abandoned uploads (presigned but never confirmed).
 
-<!-- R2-CORS -->
+## R2 CORS
+Uploads go straight from the browser to R2 with presigned PUTs, so the bucket must allow cross-origin PUT from each app origin.
+R2 → bucket → Settings → CORS Policy:
+```json
+[
+  {
+    "AllowedOrigins": ["http://localhost:3000", "https://<your-domain>"],
+    "AllowedMethods": ["PUT", "GET", "HEAD"],
+    "AllowedHeaders": ["content-type", "content-length"],
+    "ExposeHeaders": ["ETag"],
+    "MaxAgeSeconds": 3600
+  }
+]
+```
+Add every origin you upload from (e.g. a Vercel preview URL); wildcard subdomains aren't supported.
 
 ## 5. Deploy to Vercel
 1. Import the repo in Vercel (framework: Next.js; install command auto-detects pnpm).
