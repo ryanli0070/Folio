@@ -16,6 +16,15 @@ const confirmSchema = z.discriminatedUnion("purpose", [
   z.object({ purpose: z.literal("media"), projectId: z.uuid(), key: z.string().min(1).max(1024) }),
 ]);
 
+/** A key already attached to a media row or an avatar must not be confirmed again. */
+async function keyInUse(key: string): Promise<boolean> {
+  const [media, profile] = await Promise.all([
+    db.query.projectMedia.findFirst({ where: eq(projectMedia.key, key), columns: { id: true } }),
+    db.query.profiles.findFirst({ where: eq(profiles.avatarKey, key), columns: { userId: true } }),
+  ]);
+  return !!media || !!profile;
+}
+
 function errorResponse(status: number, error: string) {
   return NextResponse.json({ error }, { status });
 }
@@ -36,6 +45,9 @@ export async function POST(req: Request) {
 
   if (!input.key.startsWith(`users/${user.id}/`)) {
     return errorResponse(403, "This upload does not belong to you.");
+  }
+  if (await keyInUse(input.key)) {
+    return errorResponse(409, "This upload was already confirmed.");
   }
 
   if (input.purpose === "avatar") {
