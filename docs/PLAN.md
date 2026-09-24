@@ -4,7 +4,7 @@
 - [x] 0 Plan: CLAUDE.md, PLAN.md, HANDOFF.md
 - [x] 1 Foundation: scaffold, Tailwind/shadcn, Primer tokens, app shell, schema + migrations, Auth.js, profile-on-signup, contracts (queries, types, limits, storage interface, MediaUploader props)
 - [x] 2 Features (3 subagents): A Profile · B Projects · C Media
-- [ ] 3 Integration: pin + dnd reorder, empty/loading/error states, 404s, OG metadata, mobile pass, manual walkthrough
+- [x] 3 Integration: pin + dnd reorder, empty/loading/error states, 404s, OG metadata, mobile pass, manual walkthrough
 - [ ] 4 Deploy readiness: SETUP.md (Vercel, OAuth callback, R2 CORS, migrations), final build
 
 ## Data model
@@ -29,3 +29,5 @@
 - Only images can be a project cover (OG image); videos never become cover.
 - lucide has no brand icons: GitHub links use `Terminal`, Devpost `Trophy`, YouTube `PlayCircle`, fallback `Globe`.
 - Subagents worked in git worktrees on separate branches, merged with `--no-ff`.
+- Pinning: `lib/actions/pins.ts`; new pins go to max(position)+1, unpin renumbers remaining to 0..n-1; reorder requires the exact current pinned set.
+- Verified locally against PGlite behind a tiny Neon-HTTP shim (not committed) with a hand-inserted session; `NEON_FETCH_ENDPOINT` env hook added to `lib/db/index.ts` for this.
