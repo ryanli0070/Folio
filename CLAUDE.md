@@ -12,18 +12,20 @@ Next.js 16 (App Router, TS strict) · pnpm · Tailwind v4 + shadcn/ui (restyled 
 - `pnpm db:generate` (drizzle-kit generate) · `pnpm db:migrate` (apply migrations) · `pnpm db:studio`
 
 ## Folders
-- `app/` routes. `app/(dashboard)/dashboard/...` authed pages; `app/[username]/...` public pages.
-- `components/ui/` shadcn primitives · `components/<feature>/` feature components.
+- `app/` routes. `app/dashboard/...` authed pages (layout calls `requireUser()`); `app/[username]/...` public pages.
+- `components/ui/` shadcn primitives · `components/<feature>/` feature components · `components/tag-input.tsx` shared chip input.
 - `lib/db/schema.ts` Drizzle schema (only place tables are defined) · `lib/db/index.ts` client · `lib/queries/` read helpers.
 - `lib/actions/` server actions (mutations) · `lib/validation/` zod schemas.
 - `lib/storage/` R2 module · `lib/limits.ts` all limits · `lib/types.ts` shared types.
 - `drizzle/` generated migrations (never hand-edit).
 
 ## Rules
-- Every server action / route handler that mutates: `const user = await requireUser()` then verify ownership of the resource in the query (`where userId = user.id`). Never accept userId from the client.
+- Every server action / route handler that mutates: `const user = await requireUserForMutation()` (pages use `requireUser()`), then verify ownership of the resource in the query (`where userId = user.id`). Never accept userId from the client.
 - Validate every input with zod. URLs must be http(s) (`httpUrl` in `lib/validation`).
 - All limits (sizes, types, counts) come from `lib/limits.ts`. No magic numbers elsewhere.
 - Markdown: react-markdown + remark-gfm + rehype-sanitize only. Never `dangerouslySetInnerHTML`, never rehype-raw.
 - Deleting/replacing media, projects, or avatars must also delete the R2 object (`deleteObject`).
 - No GitHub logos/name as branding.
+- Dates rendered in client components go through `lib/format.ts` (fixed locale/UTC) to avoid hydration mismatches.
+- Public pages (`app/[username]/**`) have no `loading.tsx` on purpose: streaming would turn 404s into HTTP 200.
 - Before committing: `pnpm typecheck && pnpm lint && pnpm build`. One concern per commit.
