@@ -78,9 +78,10 @@ export async function setCover(projectId: string, mediaId: string): Promise<Acti
 
   const target = await db.query.projectMedia.findFirst({
     where: and(eq(projectMedia.id, mediaId), eq(projectMedia.projectId, projectId)),
-    columns: { id: true },
+    columns: { id: true, kind: true },
   });
   if (!target) return { ok: false, error: "Media not found." };
+  if (target.kind !== "image") return { ok: false, error: "Only images can be the cover." };
 
   await db.batch(
     asBatch([
