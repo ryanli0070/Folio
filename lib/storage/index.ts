@@ -88,7 +88,11 @@ export async function createUploadUrl(input: CreateUploadUrlInput): Promise<Crea
     ContentType: contentType,
     ContentLength: size,
   });
-  const url = await getSignedUrl(getClient(), command, { expiresIn: LIMITS.presignExpiresSeconds });
+  const url = await getSignedUrl(getClient(), command, {
+    expiresIn: LIMITS.presignExpiresSeconds,
+    // Sign Content-Type too so R2 rejects a PUT whose type differs from what we approved.
+    signableHeaders: new Set(["content-type", "content-length"]),
+  });
 
   return { key, url, headers: { "Content-Type": contentType, "Content-Length": String(size) } };
 }
