@@ -9,9 +9,9 @@ const optionalEmail = z
 
 export const profileFormSchema = z.object({
   username: usernameSchema,
-  displayName: z.string().trim(),
+  displayName: z.string().trim().max(LIMITS.displayNameMaxLength),
   bio: z.string().trim().max(LIMITS.bioMaxLength, `Bio must be ${LIMITS.bioMaxLength} characters or fewer.`),
-  school: z.string().trim(),
+  school: z.string().trim().max(LIMITS.schoolMaxLength),
   githubUrl: optionalHttpUrl,
   linkedinUrl: optionalHttpUrl,
   xUrl: optionalHttpUrl,

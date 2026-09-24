@@ -16,6 +16,9 @@ export const LIMITS = {
   taglineMaxLength: 160,
   descriptionMaxLength: 50_000,
   bioMaxLength: 300,
+  displayNameMaxLength: 80,
+  schoolMaxLength: 100,
+  linkLabelMaxLength: 100,
   presignExpiresSeconds: 300,
 } as const;
 
