@@ -1,8 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { DeleteProjectButton } from "@/components/projects/delete-project-button";
+import { ProjectList } from "@/components/dashboard/project-list";
 import { LIMITS } from "@/lib/limits";
 import { requireUser } from "@/lib/session";
 import { getProjectCards } from "@/lib/queries/projects";
@@ -50,40 +49,7 @@ export default async function DashboardPage() {
           </Button>
         </div>
       ) : (
-        <ul className="flex flex-col divide-y rounded-md border">
-          {cards.map((card) => (
-            <li key={card.id} className="flex items-center gap-3 p-3">
-              {/* Pin controls placeholder — lead adds pin/unpin + drag reorder here. */}
-              <div className="w-5 shrink-0" aria-hidden />
-
-              <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted">
-                {card.cover ? (
-                  <Image src={card.cover.url} alt="" width={56} height={56} className="size-full object-cover" unoptimized />
-                ) : (
-                  <span className="text-[0.65rem] text-muted-foreground">No image</span>
-                )}
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-medium">{card.title}</p>
-                <p className="truncate text-sm text-muted-foreground">{card.tagline || "No tagline yet"}</p>
-                <p className="text-xs text-muted-foreground">Updated {card.updatedAt.toLocaleDateString()}</p>
-              </div>
-
-              <div className="flex shrink-0 items-center gap-1">
-                <Button asChild variant="outline" size="sm">
-                  <Link href={`/dashboard/projects/${card.id}/edit`}>Edit</Link>
-                </Button>
-                {profile && (
-                  <Button asChild variant="ghost" size="sm">
-                    <Link href={`/${profile.username}/${card.slug}`}>View</Link>
-                  </Button>
-                )}
-                <DeleteProjectButton id={card.id} title={card.title} />
-              </div>
-            </li>
-          ))}
-        </ul>
+        <ProjectList cards={cards} username={profile?.username ?? null} />
       )}
     </div>
   );
