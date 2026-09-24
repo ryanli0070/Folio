@@ -50,6 +50,6 @@ Add every origin you upload from (e.g. a Vercel preview URL); wildcard subdomain
 1. Import the repo in Vercel (framework: Next.js; install command auto-detects pnpm).
 2. Project → Settings → Environment Variables: add every variable from `.env.example` for **Production** (and Preview if used). Use the prod GitHub OAuth app and set `NEXT_PUBLIC_SITE_URL=https://<your-domain>`.
 3. Run migrations against the prod database before (or right after) the first deploy:
-   `DATABASE_URL=<prod url> pnpm db:migrate` (drizzle.config.ts reads `.env.local`, but an exported env var wins).
+   `DATABASE_URL=<prod url> pnpm db:migrate` (drizzle.config.ts reads `.env.local`, but an exported env var wins). Migrations use the `pg` driver; Neon's direct (unpooled) connection string is the safest choice here.
 4. Deploy, then sign in once to confirm the OAuth callback works.
 5. After a schema change: `pnpm db:generate`, commit the new `drizzle/` file, run `pnpm db:migrate` against prod, deploy.
