@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { DeleteProjectButton } from "@/components/projects/delete-project-button";
 import { reorderPinned, setPinned } from "@/lib/actions/pins";
+import { formatDate } from "@/lib/format";
 import { LIMITS } from "@/lib/limits";
 import type { ProjectCard } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -175,7 +176,7 @@ function Row({
       <div className="min-w-0 flex-1 basis-40">
         <p className="truncate font-medium">{card.title}</p>
         <p className="truncate text-sm text-muted-foreground">{card.tagline || "No tagline yet"}</p>
-        <p className="text-xs text-muted-foreground">Updated {card.updatedAt.toLocaleDateString()}</p>
+        <p className="text-xs text-muted-foreground">Updated {formatDate(card.updatedAt)}</p>
       </div>
 
       <div className="flex w-full shrink-0 items-center justify-end gap-1 sm:w-auto">
