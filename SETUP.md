@@ -7,8 +7,8 @@
 4. `pnpm dev` → http://localhost:3000
 
 ### Optional: local database without Neon
-`lib/db/index.ts` honors `NEON_FETCH_ENDPOINT`, so you can run Postgres locally behind Neon's
-[local HTTP proxy](https://neon.com/guides/local-development-with-neon) and set e.g.
+`lib/db/index.ts` honors `NEON_FETCH_ENDPOINT`, so you can run Postgres locally behind a Neon-compatible
+SQL-over-HTTP proxy (Neon publishes one for local development; see their docs) and set e.g.
 `NEON_FETCH_ENDPOINT=http://localhost:4444/sql`. Leave it unset in production.
 
 ## 2. Neon Postgres
