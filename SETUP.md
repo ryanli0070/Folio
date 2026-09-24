@@ -6,6 +6,11 @@
 3. `pnpm db:migrate` — applies `drizzle/*.sql` to `DATABASE_URL`.
 4. `pnpm dev` → http://localhost:3000
 
+### Optional: local database without Neon
+`lib/db/index.ts` honors `NEON_FETCH_ENDPOINT`, so you can run Postgres locally behind Neon's
+[local HTTP proxy](https://neon.com/guides/local-development-with-neon) and set e.g.
+`NEON_FETCH_ENDPOINT=http://localhost:4444/sql`. Leave it unset in production.
+
 ## 2. Neon Postgres
 Create a Neon project and copy the **pooled** connection string into `DATABASE_URL` (include `?sslmode=require`).
 Use a separate Neon branch for local dev if you want to keep prod data clean.
