@@ -1,3 +1,5 @@
+@AGENTS.md
+
 # Folio
 
 Portfolio webapp: one public page per user listing all their projects (links, media, markdown, stack, collaborators).
