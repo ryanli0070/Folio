@@ -60,14 +60,14 @@ const components: Components = {
   code: ({ node: _node, className, ...props }) => {
     const isBlock = /language-/.test(className ?? "");
     if (isBlock) return <code {...props} className={cn("font-mono text-sm", className)} />;
-    return <code {...props} className={cn("rounded bg-canvas-subtle px-1 py-0.5 font-mono text-[0.85em]", className)} />;
+    return <code {...props} className={cn("rounded bg-canvas-subtle px-1 py-0.5 font-mono text-[0.85em] break-all", className)} />;
   },
   strong: ({ node: _node, className, ...props }) => <strong {...props} className={cn("font-semibold", className)} />,
 };
 
 export function Markdown({ children }: { children: string }) {
   return (
-    <div className="max-w-none text-sm text-foreground">
+    <div className="max-w-none min-w-0 text-sm text-foreground [overflow-wrap:anywhere]">
       <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize]} components={components}>
         {children}
       </ReactMarkdown>
