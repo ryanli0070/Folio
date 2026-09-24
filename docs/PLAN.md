@@ -3,7 +3,7 @@
 ## Phases
 - [x] 0 Plan: CLAUDE.md, PLAN.md, HANDOFF.md
 - [x] 1 Foundation: scaffold, Tailwind/shadcn, Primer tokens, app shell, schema + migrations, Auth.js, profile-on-signup, contracts (queries, types, limits, storage interface, MediaUploader props)
-- [ ] 2 Features (3 subagents): A Profile · B Projects · C Media
+- [x] 2 Features (3 subagents): A Profile · B Projects · C Media
 - [ ] 3 Integration: pin + dnd reorder, empty/loading/error states, 404s, OG metadata, mobile pass, manual walkthrough
 - [ ] 4 Deploy readiness: SETUP.md (Vercel, OAuth callback, R2 CORS, migrations), final build
 
@@ -25,3 +25,7 @@
 - No `proxy.ts`: DB sessions can't be checked cheaply at the edge; `app/dashboard/layout.tsx` calls `requireUser()` and every action re-checks.
 - Buttons/tokens restyled in place (`components/ui/button.tsx`, `app/globals.css`); brand mark is a plain "F" tile.
 - Unconfirmed uploads (presigned but never confirmed) can leave orphan R2 objects; acceptable for v1, fix later with an R2 lifecycle rule on `users/` or a cleanup job.
+- Presigned PUTs sign `content-type` and `content-length` (`signableHeaders`), so R2 rejects mismatched uploads; confirm still HEADs and re-validates.
+- Only images can be a project cover (OG image); videos never become cover.
+- lucide has no brand icons: GitHub links use `Terminal`, Devpost `Trophy`, YouTube `PlayCircle`, fallback `Globe`.
+- Subagents worked in git worktrees on separate branches, merged with `--no-ff`.
