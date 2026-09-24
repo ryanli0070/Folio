@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LIMITS } from "@/lib/limits";
 import { createProject, updateProject } from "@/lib/actions/projects";
 import { Markdown } from "./markdown";
-import { TagInput } from "./tag-input";
+import { TagInput } from "@/components/tag-input";
 import { LinkEditor, type LinkDraft } from "./link-editor";
 
 export type ProjectFormValues = {
@@ -112,6 +112,7 @@ export function ProjectForm(props: ProjectFormProps) {
           value={values.stack}
           onChange={(v) => set("stack", v)}
           max={LIMITS.maxTags}
+          maxTagLength={LIMITS.tagMaxLength}
           placeholder="Add a technology and press Enter"
           aria-label="Tech stack"
         />

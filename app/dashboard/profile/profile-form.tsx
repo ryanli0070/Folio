@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { TagInput } from "@/components/profile/tag-input";
+import { TagInput } from "@/components/tag-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -205,6 +205,7 @@ export function ProfileForm({ profile }: { profile: PublicProfile }) {
           onChange={(tags) => set("skills", tags)}
           max={LIMITS.maxTags}
           maxTagLength={LIMITS.tagMaxLength}
+          placeholder="Add a skill and press Enter"
           aria-invalid={!!fieldErrors.skills}
         />
         <FieldError messages={fieldErrors.skills} />
