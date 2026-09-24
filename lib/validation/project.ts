@@ -9,7 +9,7 @@ export const projectLinkInputSchema = z.object({
     .string()
     .trim()
     .min(1, "Add a label for this link.")
-    .max(100, "Keep link labels under 100 characters."),
+    .max(LIMITS.linkLabelMaxLength, `Keep link labels under ${LIMITS.linkLabelMaxLength} characters.`),
   url: httpUrl,
 });
 export type ProjectLinkInput = z.infer<typeof projectLinkInputSchema>;
