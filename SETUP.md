@@ -12,7 +12,7 @@ SQL-over-HTTP proxy (Neon publishes one for local development; see their docs) a
 `NEON_FETCH_ENDPOINT=http://localhost:4444/sql`. Leave it unset in production.
 
 ## 2. Neon Postgres
-Create a Neon project and copy the **pooled** connection string into `DATABASE_URL` (include `?sslmode=require`).
+Create a Neon project and copy the **direct** (connection pooling off) connection string into `DATABASE_URL` (include `?sslmode=require`). The app uses Neon's HTTP driver, so pooling doesn't matter at runtime, and migrations are safest over a direct connection.
 Use a separate Neon branch for local dev if you want to keep prod data clean.
 
 ## 3. GitHub OAuth app
@@ -50,6 +50,6 @@ Add every origin you upload from (e.g. a Vercel preview URL); wildcard subdomain
 1. Import the repo in Vercel (framework: Next.js; install command auto-detects pnpm).
 2. Project → Settings → Environment Variables: add every variable from `.env.example` for **Production** (and Preview if used). Use the prod GitHub OAuth app and set `NEXT_PUBLIC_SITE_URL=https://<your-domain>`.
 3. Run migrations against the prod database before (or right after) the first deploy:
-   `DATABASE_URL=<prod url> pnpm db:migrate` (drizzle.config.ts reads `.env.local`, but an exported env var wins). Migrations use the `pg` driver; Neon's direct (unpooled) connection string is the safest choice here.
+   `DATABASE_URL=<prod url> pnpm db:migrate` (drizzle.config.ts reads `.env.local`, but an exported env var wins). Migrations use the `pg` driver over the direct connection string.
 4. Deploy, then sign in once to confirm the OAuth callback works.
 5. After a schema change: `pnpm db:generate`, commit the new `drizzle/` file, run `pnpm db:migrate` against prod, deploy.
