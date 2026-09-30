@@ -357,7 +357,7 @@ function SortableMediaItem({
         {...attributes}
         {...listeners}
         aria-label="Drag to reorder"
-        className="absolute bottom-1.5 left-1.5 flex size-6 touch-none cursor-grab items-center justify-center rounded-md bg-background/80 text-foreground opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 focus-visible:opacity-100 active:cursor-grabbing"
+        className="absolute bottom-1.5 left-1.5 flex size-6 touch-none cursor-grab items-center justify-center rounded-md bg-background/80 text-foreground backdrop-blur-sm transition-opacity md:opacity-0 md:group-hover:opacity-100 focus-visible:opacity-100 active:cursor-grabbing"
       >
         <GripVertical className="size-3.5" />
       </button>
