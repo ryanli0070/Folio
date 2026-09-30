@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Play } from "lucide-react";
 import type { MediaItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { videoSrcWithPoster } from "@/lib/video";
 
 export type MediaGalleryProps = { media: MediaItem[]; title: string };
 
@@ -41,7 +42,7 @@ export function MediaGallery({ media, title }: MediaGalleryProps) {
             priority
           />
         ) : (
-          <video key={active.id} src={active.url} controls playsInline preload="metadata" className="size-full">
+          <video key={active.id} src={videoSrcWithPoster(active.url)} controls playsInline preload="metadata" className="size-full">
             Your browser doesn&apos;t support embedded video.
           </video>
         )}
@@ -65,7 +66,7 @@ export function MediaGallery({ media, title }: MediaGalleryProps) {
                   <Image src={item.url} alt="" fill sizes="80px" className="object-cover" />
                 ) : (
                   <>
-                    <video src={item.url} muted preload="metadata" className="size-full object-cover" />
+                    <video src={videoSrcWithPoster(item.url)} muted playsInline preload="metadata" className="size-full object-cover" />
                     <span className="absolute inset-0 flex items-center justify-center bg-black/20">
                       <Play className="size-4 fill-white text-white" aria-hidden="true" />
                     </span>

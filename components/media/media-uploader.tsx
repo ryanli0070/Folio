@@ -43,6 +43,7 @@ import { LIMITS, maxBytesFor } from "@/lib/limits";
 import { uploadFile } from "@/lib/storage/client";
 import type { MediaItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { videoSrcWithPoster } from "@/lib/video";
 
 export type MediaUploaderProps = {
   projectId: string;
@@ -345,7 +346,7 @@ function SortableMediaItem({
       {item.kind === "image" ? (
         <Image src={item.url} alt="" fill sizes="(min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw" className="object-cover" />
       ) : (
-        <video src={item.url} muted preload="metadata" className="size-full object-cover" />
+        <video src={videoSrcWithPoster(item.url)} muted playsInline preload="metadata" className="size-full object-cover" />
       )}
 
       {item.isCover && <Badge className="absolute top-1.5 left-1.5">Cover</Badge>}
