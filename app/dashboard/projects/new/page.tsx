@@ -11,7 +11,6 @@ export default async function NewProjectPage() {
     <div className="flex flex-col gap-6">
       <h1 className="text-2xl font-semibold">New project</h1>
       <ProjectForm mode="create" />
-      <p className="text-sm text-muted-foreground">Save the project to add images and videos.</p>
     </div>
   );
 }
