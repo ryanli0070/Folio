@@ -94,16 +94,16 @@ export default async function ProjectPage(props: PageProps<"/[username]/[slug]">
         </div>
       )}
 
+      {project.description.trim() && (
+        <div className="rounded-md border p-4">
+          <Markdown>{project.description}</Markdown>
+        </div>
+      )}
+
       {project.collaborators.length > 0 && (
         <div className="flex flex-col gap-2">
           <h2 className="text-sm font-medium">Collaborators</h2>
           <CollaboratorList collaborators={project.collaborators} />
-        </div>
-      )}
-
-      {project.description.trim() && (
-        <div className="rounded-md border p-4">
-          <Markdown>{project.description}</Markdown>
         </div>
       )}
     </div>
