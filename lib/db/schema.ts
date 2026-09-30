@@ -147,6 +147,26 @@ export const projectMedia = pgTable(
   (t) => [index("project_media_project_idx").on(t.projectId)],
 );
 
+/**
+ * One row per presigned upload URL. Drives the per-user upload rate limit and storage quota,
+ * and lets a daily cron delete objects that were uploaded but never confirmed.
+ */
+export const uploadIntents = pgTable(
+  "upload_intent",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    key: text("key").notNull().unique(),
+    purpose: text("purpose").$type<"avatar" | "media">().notNull(),
+    size: integer("size").notNull(),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    confirmedAt: timestamp("confirmed_at", { mode: "date" }),
+  },
+  (t) => [index("upload_intent_user_created_idx").on(t.userId, t.createdAt)],
+);
+
 // ---- Relations (for db.query) ----
 
 export const usersRelations = relations(users, ({ one, many }) => ({

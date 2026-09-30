@@ -23,6 +23,12 @@ export const LIMITS = {
   schoolMaxLength: 100,
   linkLabelMaxLength: 100,
   presignExpiresSeconds: 300,
+  /** Upload URLs a user may request per rolling hour. */
+  uploadsPerHour: 30,
+  /** Total stored media per user, including unconfirmed uploads from the last day. */
+  storageQuotaBytes: 1024 * MB,
+  /** Unconfirmed uploads older than this are deleted by the daily cleanup cron. */
+  pendingUploadTtlHours: 24,
 } as const;
 
 export const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"] as const;
