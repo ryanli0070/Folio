@@ -161,7 +161,11 @@ export const uploadIntents = pgTable(
     key: text("key").notNull().unique(),
     purpose: text("purpose").$type<"avatar" | "media">().notNull(),
     size: integer("size").notNull(),
-    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    // Stamped by the app (not DB now()) so rate-limit windows use the same clock regardless of DB timezone.
+    createdAt: timestamp("created_at", { mode: "date" })
+      .notNull()
+      .defaultNow()
+      .$defaultFn(() => new Date()),
     confirmedAt: timestamp("confirmed_at", { mode: "date" }),
   },
   (t) => [index("upload_intent_user_created_idx").on(t.userId, t.createdAt)],
