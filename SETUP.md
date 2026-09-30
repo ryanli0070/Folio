@@ -53,3 +53,12 @@ Add every origin you upload from (e.g. a Vercel preview URL); wildcard subdomain
    `DATABASE_URL=<prod url> pnpm db:migrate` (drizzle.config.ts reads `.env.local`, but an exported env var wins). Migrations use the `pg` driver over the direct connection string.
 4. Deploy, then sign in once to confirm the OAuth callback works.
 5. After a schema change: `pnpm db:generate`, commit the new `drizzle/` file, run `pnpm db:migrate` against prod, deploy.
+
+## 6. Abuse protection (already built in)
+- **Uploads**: max `LIMITS.uploadsPerHour` upload URLs per user per hour and `LIMITS.storageQuotaBytes` stored per user
+  (unconfirmed uploads count for 24h). Tune in `lib/limits.ts`.
+- **Cleanup cron**: `vercel.json` runs `/api/cron/cleanup-uploads` daily to delete uploads that were never confirmed.
+  Set `CRON_SECRET` in Vercel (Production) or the job returns 401 and does nothing. Check runs under Settings → Cron Jobs.
+- **Security headers**: set in `next.config.ts`.
+- **If you ever get flooded**: Vercel → Firewall → turn on *Attack Challenge Mode*, or block an IP there. Nothing in the app needs to change.
+- **Schema changes ship before code**: run `pnpm db:migrate` against production *before* pushing code that needs the new table.
