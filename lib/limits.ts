@@ -8,7 +8,10 @@ export const LIMITS = {
   maxMediaPerProject: 12,
   maxProjectsPerUser: 50,
   maxPinnedProjects: 6,
-  maxTags: 10,
+  maxSkills: 25,
+  maxStackTags: 15,
+  /** Stack chips shown on a profile card before the "+N" toggle. */
+  cardStackPreview: 6,
   maxLinksPerProject: 20,
   maxCollaborators: 20,
   tagMaxLength: 32,

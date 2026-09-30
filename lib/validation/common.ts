@@ -43,16 +43,17 @@ export const optionalHttpUrl = z
 
 export const tagSchema = z.string().trim().min(1).max(LIMITS.tagMaxLength);
 
-/** Deduped (case-insensitive) list of tags, capped at LIMITS.maxTags. */
-export const tagListSchema = z
-  .array(tagSchema)
-  .max(LIMITS.maxTags, `At most ${LIMITS.maxTags} tags.`)
-  .transform((tags) => {
-    const seen = new Set<string>();
-    return tags.filter((t) => {
-      const k = t.toLowerCase();
-      if (seen.has(k)) return false;
-      seen.add(k);
-      return true;
+/** Deduped (case-insensitive) list of tags, capped at `max`. */
+export const tagListSchema = (max: number) =>
+  z
+    .array(tagSchema)
+    .max(max, `At most ${max} tags.`)
+    .transform((tags) => {
+      const seen = new Set<string>();
+      return tags.filter((t) => {
+        const k = t.toLowerCase();
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return true;
+      });
     });
-  });

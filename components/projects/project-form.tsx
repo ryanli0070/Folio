@@ -111,7 +111,7 @@ export function ProjectForm(props: ProjectFormProps) {
         <TagInput
           value={values.stack}
           onChange={(v) => set("stack", v)}
-          max={LIMITS.maxTags}
+          max={LIMITS.maxStackTags}
           maxTagLength={LIMITS.tagMaxLength}
           placeholder="Add a technology and press Enter"
           aria-label="Tech stack"

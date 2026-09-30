@@ -30,7 +30,7 @@ export const projectInputSchema = z.object({
     .string()
     .max(LIMITS.descriptionMaxLength, "That description is too long.")
     .default(""),
-  stack: tagListSchema.default([]),
+  stack: tagListSchema(LIMITS.maxStackTags).default([]),
   collaborators: z
     .array(collaboratorNameSchema)
     .max(LIMITS.maxCollaborators, `At most ${LIMITS.maxCollaborators} collaborators.`)

@@ -203,7 +203,7 @@ export function ProfileForm({ profile }: { profile: PublicProfile }) {
           id="skills"
           value={values.skills}
           onChange={(tags) => set("skills", tags)}
-          max={LIMITS.maxTags}
+          max={LIMITS.maxSkills}
           maxTagLength={LIMITS.tagMaxLength}
           placeholder="Add a skill and press Enter"
           aria-invalid={!!fieldErrors.skills}

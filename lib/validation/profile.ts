@@ -18,7 +18,7 @@ export const profileFormSchema = z.object({
   websiteUrl: optionalHttpUrl,
   email: optionalEmail,
   resumeUrl: optionalHttpUrl,
-  skills: tagListSchema,
+  skills: tagListSchema(LIMITS.maxSkills),
   openToWork: z.boolean(),
 });
 
