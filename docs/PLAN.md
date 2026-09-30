@@ -31,3 +31,4 @@
 - Subagents worked in git worktrees on separate branches, merged with `--no-ff`.
 - Pinning: `lib/actions/pins.ts`; new pins go to max(position)+1, unpin renumbers remaining to 0..n-1; reorder requires the exact current pinned set.
 - Verified locally against PGlite behind a tiny Neon-HTTP shim (not committed) with a hand-inserted session; `NEON_FETCH_ENDPOINT` env hook added to `lib/db/index.ts` for this.
+- Vercel Web Analytics added (`<Analytics />` in `app/layout.tsx`) at the owner's request, reversing the v1 "no analytics" scope note. Cookieless; enable it in the Vercel dashboard.
