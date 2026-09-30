@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import {
   closestCenter,
@@ -29,6 +28,7 @@ import { formatDate } from "@/lib/format";
 import { LIMITS } from "@/lib/limits";
 import type { ProjectCard } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { MediaThumb } from "@/components/media/media-thumb";
 
 type Props = { cards: ProjectCard[]; username: string | null };
 
@@ -165,9 +165,9 @@ function Row({
   return (
     <div className="flex flex-wrap items-center gap-3 p-3">
       {handle}
-      <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-md border bg-muted">
+      <div className="relative flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-md border bg-muted">
         {card.cover ? (
-          <Image src={card.cover.url} alt="" width={56} height={56} className="size-full object-cover" unoptimized />
+          <MediaThumb item={card.cover} sizes="56px" unoptimized />
         ) : (
           <span className="text-[0.65rem] text-muted-foreground">No image</span>
         )}

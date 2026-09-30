@@ -25,7 +25,14 @@ export function resolveAvatarUrl(avatarKey: string | null, githubImage: string |
   return githubImage ?? null;
 }
 
-/** Cover = media flagged isCover, else first image by position. */
+/** Profile thumbnail = media flagged isCover (image or video), else first image, else first item. */
 export function pickCover(media: MediaItem[]): MediaItem | null {
-  return media.find((m) => m.isCover) ?? media.find((m) => m.kind === "image") ?? null;
+  return media.find((m) => m.isCover) ?? media.find((m) => m.kind === "image") ?? media[0] ?? null;
+}
+
+/** Link-preview image: the cover if it is an image, else the first image. Videos can't be OG images. */
+export function pickOgImage(media: MediaItem[]): MediaItem | null {
+  const cover = media.find((m) => m.isCover);
+  if (cover?.kind === "image") return cover;
+  return media.find((m) => m.kind === "image") ?? null;
 }

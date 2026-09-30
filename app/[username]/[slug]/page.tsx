@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getProfileByUsername } from "@/lib/queries/profiles";
 import { getProjectBySlug } from "@/lib/queries/projects";
-import { pickCover } from "@/lib/queries/mappers";
+import { pickOgImage } from "@/lib/queries/mappers";
 import { MediaGallery } from "@/components/media/media-gallery";
 import { CollaboratorList } from "@/components/projects/collaborator-list";
 import { Markdown } from "@/components/projects/markdown";
@@ -20,7 +20,7 @@ export async function generateMetadata(props: PageProps<"/[username]/[slug]">): 
   const project = await getProjectBySlug(profile.userId, slug);
   if (!project) return {};
 
-  const cover = pickCover(project.media);
+  const cover = pickOgImage(project.media);
   const description = project.tagline || undefined;
 
   return {

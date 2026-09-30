@@ -118,7 +118,7 @@ export async function POST(req: Request) {
       contentType: confirmed.contentType,
       size: confirmed.size,
       position: existingCount,
-      isCover: !hasCover && isImageType(confirmed.contentType),
+      isCover: !hasCover,
     })
     .returning();
 

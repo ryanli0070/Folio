@@ -78,10 +78,9 @@ export async function setCover(projectId: string, mediaId: string): Promise<Acti
 
   const target = await db.query.projectMedia.findFirst({
     where: and(eq(projectMedia.id, mediaId), eq(projectMedia.projectId, projectId)),
-    columns: { id: true, kind: true },
+    columns: { id: true },
   });
   if (!target) return { ok: false, error: "Media not found." };
-  if (target.kind !== "image") return { ok: false, error: "Only images can be the cover." };
 
   await db.batch(
     asBatch([
@@ -124,7 +123,7 @@ export async function deleteMedia(projectId: string, mediaId: string): Promise<A
   const statements = remaining.map((m, position) => db.update(projectMedia).set({ position }).where(eq(projectMedia.id, m.id)));
 
   if (target.isCover) {
-    const newCover = remaining.find((m) => m.kind === "image");
+    const newCover = remaining.find((m) => m.kind === "image") ?? remaining[0];
     if (newCover) {
       statements.push(db.update(projectMedia).set({ isCover: true }).where(eq(projectMedia.id, newCover.id)));
     }

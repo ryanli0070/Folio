@@ -300,6 +300,7 @@ export function MediaUploader({ projectId, initialMedia, onChange }: MediaUpload
 
       <p className="text-xs text-muted-foreground">
         {media.length} / {LIMITS.maxMediaPerProject} media items
+        {media.length > 0 && " · Tap the star on an image or video to use it as the thumbnail on your profile."}
       </p>
 
       <AlertDialog open={pendingDelete != null} onOpenChange={(open) => !open && setPendingDelete(null)}>
@@ -349,7 +350,7 @@ function SortableMediaItem({
         <video src={videoSrcWithPoster(item.url)} muted playsInline preload="metadata" className="size-full object-cover" />
       )}
 
-      {item.isCover && <Badge className="absolute top-1.5 left-1.5">Cover</Badge>}
+      {item.isCover && <Badge className="absolute top-1.5 left-1.5">Thumbnail</Badge>}
 
       <button
         type="button"
@@ -362,19 +363,18 @@ function SortableMediaItem({
       </button>
 
       <div className="absolute top-1.5 right-1.5 flex gap-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100">
-        {item.kind === "image" && (
-          <Button
-            type="button"
-            variant="secondary"
-            size="icon-xs"
-            disabled={disabled}
-            aria-pressed={item.isCover}
-            aria-label={item.isCover ? "Cover image" : "Set as cover"}
-            onClick={onSetCover}
-          >
-            <Star className={cn("size-3.5", item.isCover && "fill-current")} />
-          </Button>
-        )}
+        <Button
+          type="button"
+          variant="secondary"
+          size="icon-xs"
+          disabled={disabled}
+          aria-pressed={item.isCover}
+          aria-label={item.isCover ? "Profile thumbnail" : "Use as profile thumbnail"}
+          title={item.isCover ? "Profile thumbnail" : "Use as profile thumbnail"}
+          onClick={onSetCover}
+        >
+          <Star className={cn("size-3.5", item.isCover && "fill-current")} />
+        </Button>
         <Button
           type="button"
           variant="destructive"

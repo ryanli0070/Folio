@@ -1,9 +1,9 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ImageOff } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import type { ProjectCard as ProjectCardData } from "@/lib/types";
+import { MediaThumb } from "@/components/media/media-thumb";
 
 export type ProjectCardProps = { card: ProjectCardData; username: string };
 
@@ -14,13 +14,7 @@ export function ProjectCard({ card, username }: ProjectCardProps) {
       <Card className="h-full gap-0 py-0 transition-shadow hover:shadow-sm hover:ring-foreground/20">
         <div className="relative aspect-video w-full overflow-hidden bg-canvas-subtle">
           {card.cover ? (
-            <Image
-              src={card.cover.url}
-              alt=""
-              fill
-              sizes="(min-width: 768px) 45vw, 100vw"
-              className="object-cover"
-            />
+            <MediaThumb item={card.cover} sizes="(min-width: 768px) 45vw, 100vw" />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-muted-foreground">
               <ImageOff className="size-6" aria-hidden />
