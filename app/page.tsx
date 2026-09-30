@@ -3,7 +3,7 @@ import { SignInButton } from "@/components/shell/auth-buttons";
 import { getCurrentUser } from "@/lib/session";
 
 export default async function Home() {
-  if (await getCurrentUser()) redirect("/dashboard");
+  if (await getCurrentUser()) redirect("/dashboard/me");
   return (
     <section className="mx-auto flex max-w-2xl flex-col items-center gap-6 px-4 py-24 text-center">
       <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">One link for everything you&apos;ve built.</h1>

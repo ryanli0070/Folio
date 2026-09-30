@@ -7,7 +7,7 @@ export function SignInButton({ size = "default" }: { size?: "default" | "sm" | "
       action={async () => {
         "use server";
         // Always show GitHub's account picker instead of silently reusing the last account.
-        await signIn("github", { redirectTo: "/dashboard" }, { prompt: "select_account" });
+        await signIn("github", { redirectTo: "/dashboard/me" }, { prompt: "select_account" });
       }}
     >
       <Button type="submit" size={size}>
