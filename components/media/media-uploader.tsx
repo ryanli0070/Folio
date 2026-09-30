@@ -24,7 +24,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, ImagePlus, Star, Trash2, X } from "lucide-react";
+import { GripVertical, Star, Trash2, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -39,7 +39,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { deleteMedia, reorderMedia, setCover } from "@/lib/actions/media";
-import { formatList, IMAGE_TYPES, LIMITS, maxBytesFor, toMB, VIDEO_TYPES } from "@/lib/limits";
+import { LIMITS } from "@/lib/limits";
+import { mediaFileError } from "@/lib/media-files";
+import { MediaDropZone } from "./media-drop-zone";
 import { uploadFile } from "@/lib/storage/client";
 import type { MediaItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -53,17 +55,14 @@ export type MediaUploaderProps = {
 
 type QueueItem = { id: string; file: File; progress: number; error?: string };
 
-const ACCEPT = "image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm";
 
 export function MediaUploader({ projectId, initialMedia, onChange }: MediaUploaderProps) {
   const [media, setMedia] = useState<MediaItem[]>(initialMedia);
   const [queue, setQueue] = useState<QueueItem[]>([]);
-  const [isDragOver, setIsDragOver] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<MediaItem | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [renderedProjectId, setRenderedProjectId] = useState(projectId);
 
-  const inputRef = useRef<HTMLInputElement>(null);
   const pendingRef = useRef<QueueItem[]>([]);
   const processingRef = useRef(false);
 
@@ -126,13 +125,9 @@ export function MediaUploader({ projectId, initialMedia, onChange }: MediaUpload
     let projected = media.length + pendingRef.current.length;
 
     for (const file of files) {
-      const max = maxBytesFor("media", file.type);
-      if (max == null) {
-        toast.error(unsupportedMessage(file));
-        continue;
-      }
-      if (file.size > max) {
-        toast.error(`${file.name}: is over the ${toMB(max)} MB limit.`);
+      const error = mediaFileError(file);
+      if (error) {
+        toast.error(error);
         continue;
       }
       if (projected >= LIMITS.maxMediaPerProject) {
@@ -206,52 +201,7 @@ export function MediaUploader({ projectId, initialMedia, onChange }: MediaUpload
 
   return (
     <div className="flex flex-col gap-4">
-      <div
-        role="button"
-        tabIndex={0}
-        onClick={() => inputRef.current?.click()}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            inputRef.current?.click();
-          }
-        }}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setIsDragOver(true);
-        }}
-        onDragLeave={() => setIsDragOver(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setIsDragOver(false);
-          handleFiles(e.dataTransfer.files);
-        }}
-        className={cn(
-          "flex cursor-pointer flex-col items-center gap-1.5 rounded-md border border-dashed p-6 text-center transition-colors hover:bg-muted/40",
-          isDragOver && "border-ring bg-muted/60",
-        )}
-      >
-        <ImagePlus className="size-5 text-muted-foreground" aria-hidden="true" />
-        <p className="text-sm">
-          Drag and drop, or <span className="text-link underline underline-offset-4">browse files</span>
-        </p>
-        <p className="text-xs text-muted-foreground">
-          Images: {formatList(IMAGE_TYPES)} (max {toMB(LIMITS.imageMaxBytes)} MB) · Videos: {formatList(VIDEO_TYPES)} (max{" "}
-          {toMB(LIMITS.videoMaxBytes)} MB)
-        </p>
-        <p className="text-xs text-muted-foreground">MOV and other formats aren&apos;t supported. Export videos as MP4 first.</p>
-        <input
-          ref={inputRef}
-          type="file"
-          multiple
-          accept={ACCEPT}
-          className="sr-only"
-          onChange={(e) => {
-            handleFiles(e.target.files ?? []);
-            e.target.value = "";
-          }}
-        />
-      </div>
+      <MediaDropZone onFiles={handleFiles} />
 
       {queue.length > 0 && (
         <ul className="flex flex-col gap-2">
@@ -392,10 +342,4 @@ function SortableMediaItem({
       </div>
     </li>
   );
-}
-
-function unsupportedMessage(file: File): string {
-  const isMov = file.type === "video/quicktime" || /\.mov$/i.test(file.name);
-  if (isMov) return `${file.name}: MOV isn't supported. Export it as MP4 (QuickTime: File → Export As) and upload again.`;
-  return `${file.name}: unsupported format. Use ${formatList(IMAGE_TYPES)} for images or ${formatList(VIDEO_TYPES)} for videos.`;
 }
