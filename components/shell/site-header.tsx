@@ -11,7 +11,7 @@ export async function SiteHeader() {
 
   return (
     <header className="border-b bg-canvas-subtle">
-      <div className="mx-auto flex h-14 max-w-6xl items-center gap-3 px-4">
+      <div className="flex h-14 items-center gap-3 px-4 sm:px-6">
         <Link href={profile ? `/${profile.username}` : "/"} className="flex items-center gap-2 font-semibold">
           <span aria-hidden className="grid size-7 place-items-center rounded-md bg-foreground text-sm text-background">
             F
