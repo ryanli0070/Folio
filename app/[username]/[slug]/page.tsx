@@ -9,6 +9,7 @@ import { getProfileByUsername } from "@/lib/queries/profiles";
 import { getProjectBySlug } from "@/lib/queries/projects";
 import { pickCover } from "@/lib/queries/mappers";
 import { MediaGallery } from "@/components/media/media-gallery";
+import { CollaboratorList } from "@/components/projects/collaborator-list";
 import { Markdown } from "@/components/projects/markdown";
 import { getLinkIcon } from "@/components/projects/link-icon";
 
@@ -94,10 +95,10 @@ export default async function ProjectPage(props: PageProps<"/[username]/[slug]">
       )}
 
       {project.collaborators.length > 0 && (
-        <p className="text-sm text-muted-foreground">
-          <span className="font-medium text-foreground">Collaborators: </span>
-          {project.collaborators.join(", ")}
-        </p>
+        <div className="flex flex-col gap-2">
+          <h2 className="text-sm font-medium">Collaborators</h2>
+          <CollaboratorList collaborators={project.collaborators} />
+        </div>
       )}
 
       {project.description.trim() && (

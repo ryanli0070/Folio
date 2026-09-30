@@ -1,8 +1,9 @@
 import { z } from "zod";
+import { normalizeCollaborator } from "@/lib/collaborators";
 import { LIMITS } from "@/lib/limits";
 import { httpUrl, tagListSchema } from "@/lib/validation/common";
 
-export const collaboratorNameSchema = z.string().trim().min(1).max(100);
+export const collaboratorNameSchema = z.string().trim().min(1).max(100).transform(normalizeCollaborator);
 
 export const projectLinkInputSchema = z.object({
   label: z

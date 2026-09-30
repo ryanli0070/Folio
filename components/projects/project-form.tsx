@@ -124,9 +124,10 @@ export function ProjectForm(props: ProjectFormProps) {
           value={values.collaborators}
           onChange={(v) => set("collaborators", v)}
           max={LIMITS.maxCollaborators}
-          placeholder="Add a name and press Enter"
+          placeholder="Name or @github-username, then Enter"
           aria-label="Collaborators"
         />
+        <p className="text-xs text-muted-foreground">Use @username (or paste a GitHub profile URL) to link their GitHub.</p>
       </div>
 
       <div className="flex flex-col gap-1.5">
