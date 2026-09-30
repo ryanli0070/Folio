@@ -3,6 +3,7 @@ import { z } from "zod";
 import { LIMITS } from "@/lib/limits";
 import { countMedia, ownsProject } from "@/lib/queries/projects";
 import { requireUserForMutation, UnauthorizedError } from "@/lib/session";
+import { recordUploadIntent, uploadBlockedReason } from "@/lib/uploads";
 import { createUploadUrl, StorageError } from "@/lib/storage";
 
 const presignSchema = z.discriminatedUnion("purpose", [
@@ -46,6 +47,9 @@ export async function POST(req: Request) {
     }
   }
 
+  const blocked = await uploadBlockedReason(user.id, input.size);
+  if (blocked) return errorResponse(...blocked);
+
   try {
     const result = await createUploadUrl({
       userId: user.id,
@@ -53,6 +57,7 @@ export async function POST(req: Request) {
       contentType: input.contentType,
       size: input.size,
     });
+    await recordUploadIntent(user.id, result.key, input.purpose, input.size);
     return NextResponse.json(result);
   } catch (err) {
     if (err instanceof StorageError) return errorResponse(err.status, err.message);

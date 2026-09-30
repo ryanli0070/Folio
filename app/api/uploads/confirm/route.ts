@@ -10,6 +10,7 @@ import { countMedia, ownsProject } from "@/lib/queries/projects";
 import { toMediaItem } from "@/lib/queries/mappers";
 import { requireUserForMutation, UnauthorizedError } from "@/lib/session";
 import { confirmUpload, deleteObject, publicUrl, StorageError } from "@/lib/storage";
+import { discardIntent, hasPendingIntent, markIntentConfirmed } from "@/lib/uploads";
 
 const confirmSchema = z.discriminatedUnion("purpose", [
   z.object({ purpose: z.literal("avatar"), key: z.string().min(1).max(1024) }),
@@ -49,16 +50,24 @@ export async function POST(req: Request) {
   if (await keyInUse(input.key)) {
     return errorResponse(409, "This upload was already confirmed.");
   }
+  if (!(await hasPendingIntent(user.id, input.key))) {
+    return errorResponse(400, "This upload expired or wasn't started here. Please try again.");
+  }
 
   if (input.purpose === "avatar") {
     let confirmed;
     try {
       confirmed = await confirmUpload(input.key, { userId: user.id, purpose: "avatar" });
     } catch (err) {
-      if (err instanceof StorageError) return errorResponse(err.status, err.message);
+      if (err instanceof StorageError) {
+        await discardIntent(input.key);
+        return errorResponse(err.status, err.message);
+      }
       console.error("POST /api/uploads/confirm (avatar) failed", err);
       return errorResponse(500, "Failed to confirm upload.");
     }
+
+    await markIntentConfirmed(confirmed.key);
 
     const [existing] = await db
       .select({ avatarKey: profiles.avatarKey })
@@ -98,10 +107,15 @@ export async function POST(req: Request) {
   try {
     confirmed = await confirmUpload(input.key, { userId: user.id, purpose: "media" });
   } catch (err) {
-    if (err instanceof StorageError) return errorResponse(err.status, err.message);
+    if (err instanceof StorageError) {
+      await discardIntent(input.key);
+      return errorResponse(err.status, err.message);
+    }
     console.error("POST /api/uploads/confirm (media) failed", err);
     return errorResponse(500, "Failed to confirm upload.");
   }
+
+  await markIntentConfirmed(confirmed.key);
 
   const hasCover = await db.query.projectMedia.findFirst({
     where: and(eq(projectMedia.projectId, input.projectId), eq(projectMedia.isCover, true)),
