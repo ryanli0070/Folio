@@ -173,23 +173,6 @@ export function ProjectForm(props: ProjectFormProps) {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label>Collaborators</Label>
-        <TagInput
-          value={values.collaborators}
-          onChange={(v) => set("collaborators", v)}
-          max={LIMITS.maxCollaborators}
-          placeholder="Name or @github-username, then Enter"
-          aria-label="Collaborators"
-        />
-        <p className="text-xs text-muted-foreground">Use @username (or paste a GitHub profile URL) to link their GitHub.</p>
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <Label>Links</Label>
-        <LinkEditor value={values.links} onChange={(v) => set("links", v)} max={LIMITS.maxLinksPerProject} fieldErrors={fieldErrors} />
-      </div>
-
-      <div className="flex flex-col gap-1.5">
         <Label>Description</Label>
         <Tabs defaultValue="write">
           <TabsList>
@@ -218,6 +201,23 @@ export function ProjectForm(props: ProjectFormProps) {
           </TabsContent>
         </Tabs>
         {descriptionError && <p className="text-xs text-destructive">{descriptionError}</p>}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label>Collaborators</Label>
+        <TagInput
+          value={values.collaborators}
+          onChange={(v) => set("collaborators", v)}
+          max={LIMITS.maxCollaborators}
+          placeholder="Name or @github-username, then Enter"
+          aria-label="Collaborators"
+        />
+        <p className="text-xs text-muted-foreground">Use @username (or paste a GitHub profile URL) to link their GitHub.</p>
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label>Links</Label>
+        <LinkEditor value={values.links} onChange={(v) => set("links", v)} max={LIMITS.maxLinksPerProject} fieldErrors={fieldErrors} />
       </div>
 
       {props.mode === "edit" && props.media}
