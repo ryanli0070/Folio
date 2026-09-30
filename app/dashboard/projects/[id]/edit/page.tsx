@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { z } from "zod";
 import { requireUser } from "@/lib/session";
 import { getOwnedProject } from "@/lib/queries/projects";
+import { Label } from "@/components/ui/label";
 import { ProjectForm } from "@/components/projects/project-form";
 import { MediaUploader } from "@/components/media/media-uploader";
 
@@ -31,11 +32,13 @@ export default async function EditProjectPage(props: PageProps<"/dashboard/proje
           collaborators: project.collaborators,
           links: project.links.map((l) => ({ label: l.label, url: l.url })),
         }}
+        media={
+          <div className="flex flex-col gap-1.5">
+            <Label>Images and videos</Label>
+            <MediaUploader projectId={project.id} initialMedia={project.media} />
+          </div>
+        }
       />
-      <div className="flex flex-col gap-2">
-        <h2 className="text-lg font-semibold">Media</h2>
-        <MediaUploader projectId={project.id} initialMedia={project.media} />
-      </div>
     </div>
   );
 }

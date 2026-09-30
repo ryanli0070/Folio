@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition, type FormEvent } from "react";
+import { useEffect, useState, useTransition, type FormEvent, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -37,7 +37,13 @@ const EMPTY_VALUES: ProjectFormValues = {
 
 type ProjectFormProps =
   | { mode: "create" }
-  | { mode: "edit"; projectId: string; initialValues: ProjectFormValues };
+  | {
+      mode: "edit";
+      projectId: string;
+      initialValues: ProjectFormValues;
+      /** Rendered above the submit button (the media uploader). */
+      media?: ReactNode;
+    };
 
 export function ProjectForm(props: ProjectFormProps) {
   const router = useRouter();
@@ -204,6 +210,8 @@ export function ProjectForm(props: ProjectFormProps) {
         </Tabs>
         {descriptionError && <p className="text-xs text-destructive">{descriptionError}</p>}
       </div>
+
+      {props.mode === "edit" && props.media}
 
       {props.mode === "create" && (
         <div className="flex flex-col gap-1.5">
