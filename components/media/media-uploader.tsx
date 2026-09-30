@@ -39,7 +39,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { deleteMedia, reorderMedia, setCover } from "@/lib/actions/media";
-import { LIMITS, maxBytesFor } from "@/lib/limits";
+import { formatList, IMAGE_TYPES, LIMITS, maxBytesFor, toMB, VIDEO_TYPES } from "@/lib/limits";
 import { uploadFile } from "@/lib/storage/client";
 import type { MediaItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -128,11 +128,11 @@ export function MediaUploader({ projectId, initialMedia, onChange }: MediaUpload
     for (const file of files) {
       const max = maxBytesFor("media", file.type);
       if (max == null) {
-        toast.error(`${file.name}: unsupported file type.`);
+        toast.error(unsupportedMessage(file));
         continue;
       }
       if (file.size > max) {
-        toast.error(`${file.name}: exceeds the ${Math.floor(max / (1024 * 1024))}MB limit.`);
+        toast.error(`${file.name}: is over the ${toMB(max)} MB limit.`);
         continue;
       }
       if (projected >= LIMITS.maxMediaPerProject) {
@@ -235,7 +235,11 @@ export function MediaUploader({ projectId, initialMedia, onChange }: MediaUpload
         <p className="text-sm">
           Drag and drop, or <span className="text-link underline underline-offset-4">browse files</span>
         </p>
-        <p className="text-xs text-muted-foreground">Images up to 8MB · Video up to 100MB</p>
+        <p className="text-xs text-muted-foreground">
+          Images: {formatList(IMAGE_TYPES)} (max {toMB(LIMITS.imageMaxBytes)} MB) · Videos: {formatList(VIDEO_TYPES)} (max{" "}
+          {toMB(LIMITS.videoMaxBytes)} MB)
+        </p>
+        <p className="text-xs text-muted-foreground">MOV and other formats aren&apos;t supported. Export videos as MP4 first.</p>
         <input
           ref={inputRef}
           type="file"
@@ -388,4 +392,10 @@ function SortableMediaItem({
       </div>
     </li>
   );
+}
+
+function unsupportedMessage(file: File): string {
+  const isMov = file.type === "video/quicktime" || /\.mov$/i.test(file.name);
+  if (isMov) return `${file.name}: MOV isn't supported. Export it as MP4 (QuickTime: File → Export As) and upload again.`;
+  return `${file.name}: unsupported format. Use ${formatList(IMAGE_TYPES)} for images or ${formatList(VIDEO_TYPES)} for videos.`;
 }

@@ -38,6 +38,15 @@ export const EXTENSION_BY_TYPE: Record<AllowedType, string> = {
   "video/webm": "webm",
 };
 
+/** e.g. "JPG, PNG, WEBP, GIF" — for help text. */
+export function formatList(types: readonly AllowedType[]): string {
+  return types.map((t) => EXTENSION_BY_TYPE[t].toUpperCase()).join(", ");
+}
+
+export function toMB(bytes: number): number {
+  return Math.round(bytes / MB);
+}
+
 export function isImageType(t: string): t is ImageType {
   return (IMAGE_TYPES as readonly string[]).includes(t);
 }
