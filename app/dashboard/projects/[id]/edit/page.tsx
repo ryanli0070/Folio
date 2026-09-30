@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { z } from "zod";
 import { requireUser } from "@/lib/session";
 import { getOwnedProject } from "@/lib/queries/projects";
+import { getProfileByUserId } from "@/lib/queries/profiles";
 import { Label } from "@/components/ui/label";
 import { ProjectForm } from "@/components/projects/project-form";
 import { MediaUploader } from "@/components/media/media-uploader";
@@ -15,7 +16,7 @@ export default async function EditProjectPage(props: PageProps<"/dashboard/proje
 
   if (!z.uuid().safeParse(id).success) notFound();
 
-  const project = await getOwnedProject(id, user.id);
+  const [project, profile] = await Promise.all([getOwnedProject(id, user.id), getProfileByUserId(user.id)]);
   if (!project) notFound();
 
   return (
@@ -23,6 +24,7 @@ export default async function EditProjectPage(props: PageProps<"/dashboard/proje
       <h1 className="text-2xl font-semibold">Edit project</h1>
       <ProjectForm
         mode="edit"
+        username={profile?.username ?? ""}
         projectId={project.id}
         initialValues={{
           title: project.title,

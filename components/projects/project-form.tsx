@@ -35,7 +35,10 @@ const EMPTY_VALUES: ProjectFormValues = {
   links: [],
 };
 
-type ProjectFormProps =
+type ProjectFormProps = {
+  /** Owner's username; saving redirects to their public profile. */
+  username: string;
+} & (
   | { mode: "create" }
   | {
       mode: "edit";
@@ -43,7 +46,8 @@ type ProjectFormProps =
       initialValues: ProjectFormValues;
       /** Rendered above the submit button (the media uploader). */
       media?: ReactNode;
-    };
+    }
+);
 
 export function ProjectForm(props: ProjectFormProps) {
   const router = useRouter();
@@ -102,9 +106,14 @@ export function ProjectForm(props: ProjectFormProps) {
         }
         const failed = pendingMedia.length > 0 ? await uploadPendingMedia(result.data.id) : 0;
         setUploadStatus(null);
-        if (failed > 0) toast.warning(`Project created, but ${failed} file(s) didn't upload. Add them again below.`);
-        else toast.success("Project created.");
-        router.push(`/dashboard/projects/${result.data.id}/edit`);
+        if (failed > 0) {
+          // Send them where they can retry instead of to the profile.
+          toast.warning(`Project created, but ${failed} file(s) didn't upload. Add them again below.`);
+          router.push(`/dashboard/projects/${result.data.id}/edit`);
+          return;
+        }
+        toast.success("Project created.");
+        router.push(`/${props.username}`);
         return;
       }
 
@@ -115,7 +124,7 @@ export function ProjectForm(props: ProjectFormProps) {
         return;
       }
       toast.success("Saved.");
-      router.refresh();
+      router.push(`/${props.username}`);
     });
   }
 
