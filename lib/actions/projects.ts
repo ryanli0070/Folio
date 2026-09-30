@@ -68,6 +68,8 @@ export async function createProject(input: ProjectInput): Promise<ActionResult<{
           .values(links.map((l, idx) => ({ projectId: project.id, label: l.label, url: l.url, position: idx })));
       }
       revalidatePath("/dashboard");
+      const profile = await getProfileByUserId(user.id);
+      if (profile) revalidatePath(`/${profile.username}`);
       return { ok: true, data: { id: project.id, slug: project.slug } };
     }
   }
@@ -109,7 +111,10 @@ export async function updateProject(id: string, input: ProjectInput): Promise<Ac
   revalidatePath("/dashboard");
   revalidatePath(`/dashboard/projects/${id}/edit`);
   const profile = await getProfileByUserId(user.id);
-  if (profile) revalidatePath(`/${profile.username}/${owned.slug}`);
+  if (profile) {
+    revalidatePath(`/${profile.username}`);
+    revalidatePath(`/${profile.username}/${owned.slug}`);
+  }
 
   return { ok: true, data: undefined };
 }
