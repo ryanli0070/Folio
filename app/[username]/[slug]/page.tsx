@@ -9,6 +9,7 @@ import { getProfileByUsername } from "@/lib/queries/profiles";
 import { getProjectBySlug } from "@/lib/queries/projects";
 import { pickOgImage } from "@/lib/queries/mappers";
 import { MediaGallery } from "@/components/media/media-gallery";
+import { youTubeIdsFromUrls } from "@/lib/youtube";
 import { CollaboratorList } from "@/components/projects/collaborator-list";
 import { Markdown } from "@/components/projects/markdown";
 import { getLinkIcon } from "@/components/projects/link-icon";
@@ -82,7 +83,11 @@ export default async function ProjectPage(props: PageProps<"/[username]/[slug]">
         </div>
       )}
 
-      <MediaGallery media={project.media} title={project.title} />
+      <MediaGallery
+        media={project.media}
+        title={project.title}
+        youTubeIds={youTubeIdsFromUrls(project.links.map((l) => l.url))}
+      />
 
       {project.stack.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
