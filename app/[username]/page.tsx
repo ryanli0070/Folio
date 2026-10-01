@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { FileText, GraduationCap } from "lucide-react";
+import { FileText, FolderPlus, GraduationCap, Plus } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ProjectCard } from "@/components/profile/project-card";
 import { SocialLinks } from "@/components/profile/social-links";
@@ -8,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getProfileByUsername } from "@/lib/queries/profiles";
 import { getProjectCards } from "@/lib/queries/projects";
+import { getCurrentUser } from "@/lib/session";
 
 export async function generateMetadata({ params }: PageProps<"/[username]">): Promise<Metadata> {
   const { username } = await params;
@@ -27,7 +29,8 @@ export default async function PublicProfilePage({ params }: PageProps<"/[usernam
   const profile = await getProfileByUsername(username);
   if (!profile) notFound();
 
-  const cards = await getProjectCards(profile.userId);
+  const [cards, viewer] = await Promise.all([getProjectCards(profile.userId), getCurrentUser()]);
+  const isOwner = viewer?.id === profile.userId;
   const pinned = cards.filter((c) => c.pinned);
   const rest = cards.filter((c) => !c.pinned);
   const name = profile.displayName || profile.username;
@@ -83,7 +86,25 @@ export default async function PublicProfilePage({ params }: PageProps<"/[usernam
 
         <div className="flex flex-col gap-8">
           {cards.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No projects yet.</p>
+            isOwner ? (
+              <div className="flex flex-col items-center gap-3 rounded-md border border-dashed px-6 py-16 text-center">
+                <FolderPlus className="size-8 text-muted-foreground" aria-hidden />
+                <h2 className="text-lg font-semibold">Add your first project</h2>
+                <p className="max-w-sm text-sm text-muted-foreground">
+                  Show what you&apos;ve built: links, screenshots, a demo video, your tech stack, and who you built it
+                  with. This page is what people see when you share your link.
+                </p>
+                <Button asChild>
+                  <Link href="/dashboard/projects/new">
+                    <Plus /> Create your first project
+                  </Link>
+                </Button>
+              </div>
+            ) : (
+              <p className="rounded-md border border-dashed px-6 py-16 text-center text-sm text-muted-foreground">
+                No projects yet.
+              </p>
+            )
           ) : (
             <>
               {pinned.length > 0 && (
