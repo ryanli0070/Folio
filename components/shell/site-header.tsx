@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/session";
 import { getProfileByUserId } from "@/lib/queries/profiles";
 import { SignInButton, signOutAction } from "./auth-buttons";
 import { ThemeToggle } from "./theme-toggle";
+import { NavMenu } from "./nav-menu";
 import { UserMenu } from "./user-menu";
 
 export async function SiteHeader() {
@@ -21,7 +22,10 @@ export async function SiteHeader() {
         <div className="ml-auto flex items-center gap-2">
           <ThemeToggle />
           {profile ? (
-            <UserMenu username={profile.username} avatarUrl={profile.avatarUrl} signOutAction={signOutAction} />
+            <>
+              <NavMenu username={profile.username} />
+              <UserMenu username={profile.username} avatarUrl={profile.avatarUrl} signOutAction={signOutAction} />
+            </>
           ) : (
             <SignInButton size="sm" />
           )}
